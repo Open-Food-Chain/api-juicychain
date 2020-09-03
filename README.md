@@ -23,9 +23,9 @@ cd scripts
 ```
 
 # RPC to blockchain
-http://url:8888/rpc/v1dev/getinfo
+* http://url:8888/rpc/v1dev/getinfo
 
 # API
-http://url:8888/batches/v1dev
-http://url:8888/certificates/v1dev
-http://url:8888/product-journey/v1dev
+* http://url:8888/batches/v1dev
+* http://url:8888/certificates/v1dev
+* http://url:8888/product-journey/v1dev
