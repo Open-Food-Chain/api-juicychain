@@ -1,0 +1,25 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - run: git pull
+      - name: Build docker image
+        run: docker build -t registry.unchain.io/thenewfork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)
+      # - name: Log into docker
+      #   run: docker-login -u $$USERNAME -p $$PASSWORD
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Run flake8
+        run: flake8 ./src
+
