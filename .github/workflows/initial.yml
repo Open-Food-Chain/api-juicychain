@@ -14,10 +14,13 @@ jobs:
       - run: git pull
       - name: Build docker image
         run: docker build -t registry.unchain.io/thenewfork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) .
-      - name: Install dependencies
+      - name: Run flake8
         run: |
+          apt install ibssl-dev libcurl4-openssl-dev -y
           python -m pip install --upgrade pip
           pip install -r requirements.txt -r requirements-dev.txt
+
+
       - name: Run flake8
         run: flake8 ./src
 
