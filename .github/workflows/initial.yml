@@ -13,7 +13,7 @@ jobs:
           python-version: '3.8'
       - run: git pull
       - name: Build docker image
-        run: docker build -t registry.unchain.io/thenewfork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)
+        run: docker build -t registry.unchain.io/thenewfork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) .
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
