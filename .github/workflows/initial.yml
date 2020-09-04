@@ -13,11 +13,11 @@ jobs:
           python-version: '3.8'
       - run: git pull
       - name: Build docker image
-        run: docker build -t registry.unchain.io/thenewfork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) .
+        run: docker build -t registry.unchain.io/the-new-fork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) .
       - name: Docker login
         run: docker login -u 'robot$thenewfork-bcmw-repo' -p ${{ secrets.REGISTRY_PASSWORD }} registry.unchain.io
       - name: Push to unchain registry
-        run: docker push registry.unchain.io/thenewfork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)
+        run: docker push registry.unchain.io/the-new-fork/juicychain-api:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)
       - name: Install required packages
         run: |
           python -m pip install --upgrade pip
