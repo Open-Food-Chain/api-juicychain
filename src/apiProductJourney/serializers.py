@@ -12,50 +12,48 @@ from .models import (
 
 
 class TransactionidSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Transactionid
-        fields = ('uuid', 'txid')
+        fields = ('id', 'txid')
 
 
 class WalletaddressSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Walletaddress
-        fields = ('uuid', 'name')
+        fields = ('id', 'name')
 
 
 class CertificationSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Certification
-        fields = ('uuid', 'name', 'txid', 'wallet')
+        fields = ('id', 'name', 'txid', 'wallet')
 
 
 class FacilitySerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Facility
-        fields = ('uuid', 'name', 'txid', 'wallet')
+        fields = ('id', 'name', 'txid', 'wallet')
 
 
 class BatchdetailSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Batchdetail
-        fields = ('uuid', 'name', 'wallet')
+        fields = ('id', 'name', 'wallet')
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Organization
-        fields = ('uuid', 'name', 'txid', 'wallet')
-
-
-# class ProductjourneySerializer(serializers.ModelSerializer):
-#
-#    class Meta:
-#        model = Productjourney
-#        fields = ('uuid', 'organization', 'batchdetail',
-#                  'facility', 'certification')
+        fields = ('id', 'name', 'txid', 'wallet')

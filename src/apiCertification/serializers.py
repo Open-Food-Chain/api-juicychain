@@ -3,16 +3,16 @@ from .models import Certificate, CertificateConditions
 
 
 class CertificateSerializer(serializers.ModelSerializer):
-    uuid = serializers.UUIDField(read_only=True)
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Certificate
-        fields = ('uuid', 'name')
+        fields = ('id', 'name')
 
 
 class CertificateConditionsSerializer(serializers.ModelSerializer):
-    uuid = serializers.UUIDField(read_only=True)
+    id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = CertificateConditions
-        fields = ('uuid', 'certificate_uuid')
+        fields = ('id', 'certificate_uuid')

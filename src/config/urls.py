@@ -15,11 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
+from apiProductJourney.urls import router as productjourneyrouter
+from apiCertification.urls import router as certificationrouter
+
+router = routers.DefaultRouter()
+router.registry.extend(productjourneyrouter.registry)
+router.registry.extend(certificationrouter.registry)
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('batches/v1dev/', include('apiBatchesRefresco.urls')),
-    path('product-journey/v1dev/', include('apiProductJourney.urls')),
-    path('certificates/v1dev/', include('apiCertification.urls')),
-    path('rpc/v1dev/', include('rpcJuicyChain.urls')),
+    path('v1dev/product-journey/', include('apiProductJourney.urls')),
+    path('v1dev/certificates/', include('apiCertification.urls'))
 ]

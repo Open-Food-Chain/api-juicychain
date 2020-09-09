@@ -12,7 +12,7 @@ import uuid
 
 
 class Certificate(Model):
-    uuid = UUIDField(default=uuid.uuid4, editable=False)
+    id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = CharField(max_length=255)
     certificate_serialnumber = CharField(max_length=255)
     issuer = CharField(max_length=255)
@@ -22,7 +22,7 @@ class Certificate(Model):
 
 
 class CertificateConditions(Model):
-    uuid = UUIDField(default=uuid.uuid4, editable=False)
+    id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     certificate_uuid = ForeignKey(Certificate, on_delete=CASCADE)
     object_type = CharField(max_length=255)
     object_attribute = CharField(max_length=255)
