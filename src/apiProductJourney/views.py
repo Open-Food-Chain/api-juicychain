@@ -5,7 +5,7 @@ from .models import (
     Organization,
     Batchdetail,
     Facility,
-    Certification,
+    Certificate,
     Transactionid,
     Walletaddress
 )
@@ -14,7 +14,7 @@ from .serializers import (
     OrganizationSerializer,
     BatchdetailSerializer,
     FacilitySerializer,
-    CertificationSerializer,
+    CertificateSerializer,
     TransactionidSerializer,
     WalletaddressSerializer
 )
@@ -50,6 +50,6 @@ class FacilityView(viewsets.ModelViewSet):
     serializer_class = FacilitySerializer
 
 
-class CertificationView(viewsets.ModelViewSet):
-    queryset = Certification.objects.all()
-    serializer_class = CertificationSerializer
+class CertificateView(viewsets.ModelViewSet):
+    queryset = Certificate.objects.all()
+    serializer_class = CertificateSerializer

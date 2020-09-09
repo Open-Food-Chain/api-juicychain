@@ -5,7 +5,7 @@ from .models import (
     Organization,
     Batchdetail,
     Facility,
-    Certification,
+    Certificate,
     Walletaddress,
     Transactionid
 )
@@ -27,11 +27,23 @@ class WalletaddressSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class CertificationSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
+    txid = TransactionidSerializer(read_only=True)
+    wallet = WalletaddressSerializer(read_only=True)
 
     class Meta:
-        model = Certification
+        model = Organization
+        fields = ('id', 'name', 'txid', 'wallet')
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    txid = TransactionidSerializer(read_only=True)
+    wallet = WalletaddressSerializer(read_only=True)
+
+    class Meta:
+        model = Certificate
         fields = ('id', 'name', 'txid', 'wallet')
 
 
@@ -49,11 +61,3 @@ class BatchdetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Batchdetail
         fields = ('id', 'name', 'wallet')
-
-
-class OrganizationSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(read_only=True)
-
-    class Meta:
-        model = Organization
-        fields = ('id', 'name', 'txid', 'wallet')

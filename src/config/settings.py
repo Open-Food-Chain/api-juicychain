@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'apiProductJourney.apps.ApiproductjourneyConfig',
-    'apiCertification.apps.ApicertificationConfig',
+    # 'apiCertification.apps.ApicertificationConfig',
 ]
 
 MIDDLEWARE = [

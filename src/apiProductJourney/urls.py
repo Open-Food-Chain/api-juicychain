@@ -9,7 +9,7 @@ router.register('walletaddress', views.WalletaddressView)
 router.register('organization', views.OrganizationView)
 router.register('batchdetail', views.BatchdetailView)
 router.register('facility', views.FacilityView)
-router.register('certification', views.CertificationView)
+router.register('certificate', views.CertificateView)
 
 urlpatterns = [
     path('', include(router.urls))

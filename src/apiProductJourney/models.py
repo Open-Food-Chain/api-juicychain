@@ -49,7 +49,7 @@ class Facility(Model):
     txid = ForeignKey(Transactionid, on_delete=CASCADE)
 
 
-class Certification(Model):
+class Certificate(Model):
     id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = CharField(max_length=55)
 #   wallet = ForeignKey(Walletaddress, on_delete=CASCADE)
