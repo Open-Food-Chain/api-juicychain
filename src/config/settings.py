@@ -28,7 +28,7 @@ DEBUG = True
 
 DJANGO_HOST = os.environ.get('DJANGO_HOST')
 
-ALLOWED_HOSTS = [DJANGO_HOST] if DJANGO_HOST else []
+ALLOWED_HOSTS = DJANGO_HOST.split(',') if DJANGO_HOST else []
 
 
 # Application definition
