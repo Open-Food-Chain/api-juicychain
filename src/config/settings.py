@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'apiProductJourney.apps.ApiproductjourneyConfig',
-    # 'apiCertification.apps.ApicertificationConfig',
+    'apiRegistry.apps.ApiRegistryConfig',
 ]
 
 MIDDLEWARE = [

@@ -29,3 +29,16 @@ cd scripts
 * http://url:8888/batches/v1dev
 * http://url:8888/certificates/v1dev
 * http://url:8888/product-journey/v1dev
+
+# MYLO
+```
+docker stop simple-working_db_1
+docker rm simple-working_db_1
+sudo find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+sudo find . -path "*/migrations/*.pyc"  -delete
+cd ../..
+docker-compose -f docker-compose.yaml.all up -d --remove-orphans db
+cd juicychain-api/src
+docker exec -i -t simple-working_juicychain-api_1 python manage.py makemigrations
+docker exec -i -t simple-working_juicychain-api_1 python manage.py migrate
+```

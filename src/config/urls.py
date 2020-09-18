@@ -15,16 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from apiProductJourney.urls import router as productjourneyrouter
+from apiRegistry.api import router
+# from rest_framework import routers
+# from apiProductJourney.urls import router as productjourneyrouter
 # from apiCertification.urls import router as certificationrouter
 
-router = routers.DefaultRouter()
-router.registry.extend(productjourneyrouter.registry)
+# router = routers.DefaultRouter()
+# router.registry.extend(productjourneyrouter.registry)
 # router.registry.extend(certificationrouter.registry)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # TODO remove
+    # path('', include(router.urls)),
+    # path('old/', include('apiProductJourney.urls')),
     path('admin/', admin.site.urls),
-    path('v1dev/product-journey/', include('apiProductJourney.urls'))
+    path(r'', include(router.urls))
 ]
