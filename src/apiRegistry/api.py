@@ -41,19 +41,26 @@ class OrganizationSerializer(BaseWalletSerializer):
         fields = ['id', 'name', 'pubkey', 'raddress']
 
 
-class CertificateRulesSerializer(serializers.HyperlinkedModelSerializer):
-    # id = serializers.UUIDField(read_only=True)
-
-    class Meta:
-        model = CertificateRule
-        exclude = ['url']
-
-
 class CertificateSerializer(BaseWalletSerializer):
+
+    # rule = CertificateRuleSerializer(many=True)
+    pubkey = serializers.CharField(allow_blank=True)
+    raddress = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = Certificate
         fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'organization']
+
+
+class CertificateRuleSerializer(BaseWalletSerializer):
+    # id = serializers.UUIDField(read_only=True)
+
+    pubkey = serializers.CharField(allow_blank=True)
+    raddress = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = CertificateRule
+        fields = ['id', 'name', 'condition', 'pubkey', 'raddress', 'certificate']
 
 
 class LocationSerializer(BaseWalletSerializer):
@@ -89,6 +96,14 @@ class PoolBatchSerializer(serializers.HyperlinkedModelSerializer):
 # Nested Serializer
 
 
+class NestedCertificateRuleSerializer(serializers.HyperlinkedModelSerializer):
+    # id = serializers.UUIDField(read_only=True)
+
+    class Meta:
+        model = CertificateRule
+        exclude = ['url', 'certificate']
+
+
 class NestedLocationSerializer(serializers.HyperlinkedModelSerializer):
     # organization = OrganizationSerializer()
 
@@ -99,7 +114,7 @@ class NestedLocationSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class NestedCertificateSerializer(serializers.HyperlinkedModelSerializer):
-    # organization = OrganizationSerializer()
+    rule = NestedCertificateRuleSerializer(many=True)
 
     class Meta:
         model = Certificate
@@ -129,6 +144,11 @@ class OrganizationViewSet(viewsets.ModelViewSet):
 class CertificateViewSet(viewsets.ModelViewSet):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
+
+
+class CertificateRuleViewSet(viewsets.ModelViewSet):
+    queryset = CertificateRule.objects.all()
+    serializer_class = CertificateRuleSerializer
 
 
 class LocationViewSet(viewsets.ModelViewSet):
@@ -165,6 +185,7 @@ router.register(r'api/v1/organization', OrganizationViewSet)
 router.register(r'api/v1/organization-detail', NestedOrganizationViewSet, basename='organization-detail')
 router.register(r'api/v1/location', LocationViewSet)
 router.register(r'api/v1/certificate', CertificateViewSet)
+router.register(r'api/v1/certificate-rule', CertificateRuleViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)

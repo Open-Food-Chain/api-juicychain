@@ -50,8 +50,20 @@ class Location(BaseWalletModel):
         on_delete=CASCADE)
 
 
-class Certificate(BaseWalletModel):
+class Certificate(Model):
     name = CharField(max_length=255)
+    raddress = CharField(
+        editable=True,
+        null=True,
+        blank=True,
+        default='',
+        max_length=34)
+    pubkey = CharField(
+        editable=True,
+        null=True,
+        blank=True,
+        default='',
+        max_length=66)
     date_issue = DateField()
     date_expiry = DateField()
     issuer = CharField(max_length=128)
@@ -61,13 +73,18 @@ class Certificate(BaseWalletModel):
         related_name="certificate",
         on_delete=CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class CertificateRule(BaseWalletModel):
     name = CharField(max_length=255)
-    rule = CharField(max_length=255)
+    condition = CharField(max_length=255)
     certificate = ForeignKey(
         Certificate,
-        related_name="rules",
+        null=True,
+        blank=True,
+        related_name="rule",
         on_delete=CASCADE)
 
 
