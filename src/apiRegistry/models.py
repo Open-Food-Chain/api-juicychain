@@ -34,11 +34,6 @@ class Organization(BaseWalletModel):
     name = CharField(max_length=255)
 
 
-class CertificateRule(BaseWalletModel):
-    name = CharField(max_length=255)
-    rule = CharField(max_length=255)
-
-
 class Batch(BaseWalletModel):
     identifier = CharField(max_length=255)
     date_production_start = DateField()
@@ -61,8 +56,19 @@ class Certificate(BaseWalletModel):
     date_expiry = DateField()
     issuer = CharField(max_length=128)
     identifier = CharField(max_length=255)
-    organization = ForeignKey(Organization, on_delete=CASCADE)
-    rules = ForeignKey(CertificateRule, on_delete=CASCADE)
+    organization = ForeignKey(
+        Organization,
+        related_name="certificate",
+        on_delete=CASCADE)
+
+
+class CertificateRule(BaseWalletModel):
+    name = CharField(max_length=255)
+    rule = CharField(max_length=255)
+    certificate = ForeignKey(
+        Certificate,
+        related_name="rules",
+        on_delete=CASCADE)
 
 
 class PoolPurchaseOrder(BaseWalletModel):

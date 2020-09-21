@@ -11,13 +11,6 @@ from .models import (
 )
 
 
-# TODO remove
-class BaseWalletSerializer0(serializers.ModelSerializer):
-
-    class Meta:
-        fields = ['id', 'blah']
-
-
 class BaseWalletSerializer(serializers.ModelSerializer):
     # TODO when using uuid
     # id = serializers.UUIDField(read_only=True)
@@ -56,14 +49,15 @@ class CertificateRulesSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ['url']
 
 
-class CertificateSerializer(serializers.HyperlinkedModelSerializer):
+class CertificateSerializer(BaseWalletSerializer):
 
     class Meta:
         model = Certificate
-        fields = ['id', 'name', 'pubkey', 'raddress']
+        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'organization']
 
 
 class LocationSerializer(BaseWalletSerializer):
+    # works
     # organization = OrganizationSerializer(read_only=True)
 
     class Meta:
@@ -90,6 +84,41 @@ class PoolBatchSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PoolBatch
         fields = ['id', 'name', 'pubkey', 'raddress']
+
+
+# Nested Serializer
+
+
+class NestedLocationSerializer(serializers.HyperlinkedModelSerializer):
+    # organization = OrganizationSerializer()
+
+    class Meta:
+        model = Location
+        exclude = ['url', 'organization']
+        # fields = '__all__'
+
+
+class NestedCertificateSerializer(serializers.HyperlinkedModelSerializer):
+    # organization = OrganizationSerializer()
+
+    class Meta:
+        model = Certificate
+        exclude = ['url', 'organization']
+        # fields = '__all__'
+
+
+class NestedOrganizationSerializer(serializers.HyperlinkedModelSerializer):
+    location = NestedLocationSerializer(many=True)
+    certificate = NestedCertificateSerializer(many=True)
+
+    class Meta:
+        model = Organization
+        depth = 3
+        fields = ['id', 'name', 'pubkey', 'raddress', 'location', 'certificate']
+
+
+# Standalone ViewSet
+##################################
 
 
 class OrganizationViewSet(viewsets.ModelViewSet):
@@ -122,11 +151,27 @@ class PoolBatchViewSet(viewsets.ModelViewSet):
     serializer_class = PoolBatchSerializer
 
 
+# Nested ViewSet
+#################################
+
+
+class NestedOrganizationViewSet(viewsets.ModelViewSet):
+    queryset = Organization.objects.all()
+    serializer_class = NestedOrganizationSerializer
+
+
 router = routers.DefaultRouter()
 router.register(r'api/v1/organization', OrganizationViewSet)
+router.register(r'api/v1/organization-detail', NestedOrganizationViewSet, basename='organization-detail')
+router.register(r'api/v1/location', LocationViewSet)
+router.register(r'api/v1/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)
+router.register(r'api/v1/organization/(?P<id>\d+)/location', LocationViewSet)
+router.register(r'api/v1/organization/(?P<id>\d+)/certificate', CertificateViewSet)
+# TODO works for id as integer, for UUID needs test
+# router.register(r'api/v1/organization-detail/(?P<id>[0-9a-f]+)/location', LocationViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>[0-9a-f-]+)/location', LocationViewSet)
 # router.register(r'api/v1/organization/<uuid:id>/batch', BatchViewSet)
 # router.register(r'api/v1/organization/<uuid:id>/poolpo', PoolPurchaseOrderViewSet)
