@@ -1,5 +1,8 @@
 from rest_framework import routers, serializers, viewsets
+from django.urls import path, include
 from django.core.validators import RegexValidator
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .models import (
     Organization,
     Certificate,
@@ -145,6 +148,14 @@ class CertificateViewSet(viewsets.ModelViewSet):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
 
+    @action(detail=False)  # listview
+    def no_raddress(self, request, pk=None):
+        no_raddress = Certificate.objects.filter(
+            raddress__exact=''
+        )
+        serializer = self.get_serializer(no_raddress, many=True)
+        return Response(serializer.data)
+
 
 class CertificateRuleViewSet(viewsets.ModelViewSet):
     queryset = CertificateRule.objects.all()
@@ -197,3 +208,10 @@ router.register(r'api/v1/organization/(?P<id>\d+)/certificate', CertificateViewS
 # router.register(r'api/v1/organization/<uuid:id>/batch', BatchViewSet)
 # router.register(r'api/v1/organization/<uuid:id>/poolpo', PoolPurchaseOrderViewSet)
 # router.register(r'api/v1/organization/<uuid:id>/poolbatch', PoolBatchViewSet)
+# did not work
+# router.register(r'api/v1/certificate-new', CertificateViewSet.as_view({'get': 'no_raddress'}), basename='certificate-new')
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('api/v1/certificate-new/', CertificateViewSet.as_view({'get': 'no_raddress'}))
+]
