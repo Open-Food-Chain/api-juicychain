@@ -18,11 +18,11 @@ jobs:
       - run: git pull
       - run: git pull
       - name: Build docker image
-        run: docker build -t $REGISTRY/$PROJECT/$REPOSITORY:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) .
+        run: docker build -t $REGISTRY/$PROJECT/$REPOSITORY:$(date +%Y%m%d-%H%M%S)-$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) .
       - name: Docker login
         run: docker login -u 'robot$thenewfork-never-expire' -p ${{ secrets.UNCHAIN_DOCKER_REGISTRY_TOKEN }} $REGISTRY
       - name: Push to unchain registry
-        run: docker push $REGISTRY/$PROJECT/$REPOSITORY:$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)
+        run: docker push $REGISTRY/$PROJECT/$REPOSITORY:$(date +%Y%m%d-%H%M%S)-$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)
       - name: Install required packages
         run: |
           python -m pip install --upgrade pip
