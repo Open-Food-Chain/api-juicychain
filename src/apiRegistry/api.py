@@ -149,7 +149,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
     serializer_class = CertificateSerializer
 
     @action(detail=False)  # listview
-    def no_raddress(self, request, pk=None):
+    def noraddress(self, request, pk=None):
         no_raddress = Certificate.objects.filter(
             raddress__exact=''
         )
@@ -162,7 +162,7 @@ class CertificateRuleViewSet(viewsets.ModelViewSet):
     serializer_class = CertificateRuleSerializer
 
     @action(detail=False)  # listview
-    def no_raddress(self, request, pk=None):
+    def noraddress(self, request, pk=None):
         no_raddress = CertificateRule.objects.filter(
             raddress__exact=''
         )
@@ -221,6 +221,6 @@ router.register(r'api/v1/organization/(?P<id>\d+)/certificate', CertificateViewS
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('api/v1/certificate-new/', CertificateViewSet.as_view({'get': 'no_raddress'})),
-    path('api/v1/certificate-rule-new/', CertificateRuleViewSet.as_view({'get': 'no_raddress'}))
+    path('api/v1/certificate-new/', CertificateViewSet.as_view({'get': 'noraddress'})),
+    path('api/v1/certificate-rule-new/', CertificateRuleViewSet.as_view({'get': 'noraddress'}))
 ]
