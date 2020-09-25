@@ -189,6 +189,17 @@ class LocationViewSet(viewsets.ModelViewSet):
 class BatchViewSet(viewsets.ModelViewSet):
     queryset = Batch.objects.all()
     serializer_class = BatchSerializer
+    print("HERE")
+
+    def get_queryset(self):
+        print("CHCKING")
+        queryset = Batch.objects.all()
+        bbd = self.request.query_params.get('bbd', None)
+        jds = self.request.query_params.get('jds', None)
+        if (bbd is not None) and (jds is not None):
+            # TODO find better querying techniques
+            queryset = queryset.filter(date_best_before=bbd, jds=jds)[0:1]
+        return queryset
 
 
 class PoolPurchaseOrderViewSet(viewsets.ModelViewSet):
