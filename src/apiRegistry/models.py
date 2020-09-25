@@ -3,6 +3,7 @@ from django.db.models import (
     # AutoField,
     CASCADE,
     CharField,
+    IntegerField,
     DateField,
     ForeignKey,
     # OneToOneField,
@@ -36,10 +37,15 @@ class Organization(BaseWalletModel):
 
 class Batch(BaseWalletModel):
     identifier = CharField(max_length=255)
+    jds = IntegerField()
+    jde = IntegerField()
     date_production_start = DateField()
     date_best_before = DateField()
     origin_country = CharField(max_length=255)
-    organization = ForeignKey(Organization, on_delete=CASCADE)
+    organization = ForeignKey(
+        Organization,
+        related_name="batch",
+        on_delete=CASCADE)
 
 
 class Location(BaseWalletModel):

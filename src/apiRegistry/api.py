@@ -75,11 +75,14 @@ class LocationSerializer(BaseWalletSerializer):
         fields = ['id', 'name', 'pubkey', 'raddress', 'organization']
 
 
-class BatchSerializer(serializers.HyperlinkedModelSerializer):
+class BatchSerializer(BaseWalletSerializer):
+
+    pubkey = serializers.CharField(allow_blank=True)
+    raddress = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = Batch
-        fields = ['id', 'name', 'pubkey', 'raddress']
+        fields = ['id', 'identifier', 'jds', 'jde', 'date_production_start', 'date_best_before', 'origin_country', 'pubkey', 'raddress', 'organization']
 
 
 class PoolPurchaseOrderSerializer(serializers.HyperlinkedModelSerializer):
@@ -97,6 +100,13 @@ class PoolBatchSerializer(serializers.HyperlinkedModelSerializer):
 
 
 # Nested Serializer
+
+
+class NestedBatchSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Batch
+        exclude = ['url', 'organization']
 
 
 class NestedCertificateRuleSerializer(serializers.HyperlinkedModelSerializer):
@@ -128,11 +138,12 @@ class NestedCertificateSerializer(serializers.HyperlinkedModelSerializer):
 class NestedOrganizationSerializer(serializers.HyperlinkedModelSerializer):
     location = NestedLocationSerializer(many=True)
     certificate = NestedCertificateSerializer(many=True)
+    batch = NestedBatchSerializer(many=True)
 
     class Meta:
         model = Organization
         depth = 3
-        fields = ['id', 'name', 'pubkey', 'raddress', 'location', 'certificate']
+        fields = ['id', 'name', 'pubkey', 'raddress', 'location', 'certificate', 'batch']
 
 
 # Standalone ViewSet
@@ -205,6 +216,7 @@ router.register(r'api/v1/organization-detail', NestedOrganizationViewSet, basena
 router.register(r'api/v1/location', LocationViewSet)
 router.register(r'api/v1/certificate', CertificateViewSet)
 router.register(r'api/v1/certificate-rule', CertificateRuleViewSet)
+router.register(r'api/v1/batch', BatchViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)

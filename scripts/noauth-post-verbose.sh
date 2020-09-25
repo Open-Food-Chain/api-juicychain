@@ -1,9 +1,9 @@
 #!/bin/bash
 API_HOST="http://172.29.0.5:8999/"
-API_HOST="http://juicychain-api.thenewfork.staging.do.unchain.io/"
+#API_HOST="http://juicychain-api.thenewfork.staging.do.unchain.io/"
 API_VER="api/v1/"
 
-for i in {1..1}
+for i in {1..2}
 do
 
         # DATES
@@ -124,4 +124,42 @@ do
 	echo curl -s -X POST -H "Content-Type: application/json" ${API_HOST}${API_VER}certificate-rule/ -d "{ \"name\": \"${CERT_2_RULE_NAME}\",\"pubkey\": \"${RANDOM_PUBKEY}\",\"raddress\": \"${RANDOM_RADDRESS}\", \"condition\": \"${CONDITION}\", \"certificate\": ${CERT_2_ID}}"
 	CERT_2_RULE_2_ID=$(curl -s -X POST -H "Content-Type: application/json" ${API_HOST}${API_VER}certificate-rule/ -d "{ \"name\": \"${CERT_2_RULE_NAME}\",\"pubkey\": \"${RANDOM_PUBKEY}\",\"raddress\": \"${RANDOM_RADDRESS}\", \"condition\": \"${CONDITION}\", \"certificate\": ${CERT_2_ID}}" | jq '.id')
 	echo ${CERT_2_RULE_2_ID}
+
+	echo "Create some batches"
+	RANDOM_64H=$(cat /dev/urandom | tr -dc 'A-F0-9' | fold -w 64 | head -n 1)
+        RANDOM_PUBKEY="02${RANDOM_64H}"
+        RANDOM_33H=$(cat /dev/urandom | tr -dc 'A-F0-9' | fold -w 33 | head -n 1)
+        RANDOM_RADDRESS="R${RANDOM_33H}"
+        RANDOM_7D=$(cat /dev/urandom | tr -dc '0-9' | fold -w 7 | head -n 1)
+        RANDOM_IDENTIFIER="ID-${RANDOM_7D}"
+	RANDOM_1D=$(cat /dev/urandom | tr -dc '2-5' | fold -w 1 | head -n 1)
+	JDS=$(cat /dev/urandom | tr -dc '1-2' | fold -w 2 | head -n 1)
+        JDE=$((JDS + RANDOM_1D))
+	YEAR="2020"
+	PROD_MONTH=${RANDOM_1D}
+	PROD_DATE="${YEAR}-${PROD_MONTH}-${JDS}"
+	BBD_MONTH=$((PROD_MONTH + 2))
+	BB_DATE="${YEAR}-${BBD_MONTH}-${JDE}"
+	ORIGIN_COUNTRY="DE"
+	echo curl -s -X POST -H "Content-Type: application/json" ${API_HOST}${API_VER}batch/ -d "{\"identifier\": \"${RANDOM_IDENTIFIER}\",\"jds\": ${JDS}, \"jde\": ${JDE}, \"date_production_start\": \"${PROD_DATE}\", \"date_best_before\": \"${BB_DATE}\", \"origin_country\": \"${ORIGIN_COUNTRY}\", \"pubkey\": \"${RANDOM_PUBKEY}\", \"raddress\": \"$RANDOM_RADDRESS\", \"organization\": ${ORG_ID}}" 
+	curl -s -X POST -H "Content-Type: application/json" ${API_HOST}${API_VER}batch/ -d "{\"identifier\": \"${RANDOM_IDENTIFIER}\",\"jds\": ${JDS}, \"jde\": ${JDE}, \"date_production_start\": \"${PROD_DATE}\", \"date_best_before\": \"${BB_DATE}\", \"origin_country\": \"${ORIGIN_COUNTRY}\", \"pubkey\": \"${RANDOM_PUBKEY}\", \"raddress\": \"$RANDOM_RADDRESS\", \"organization\": ${ORG_ID}}" 
+
+	RANDOM_64H=$(cat /dev/urandom | tr -dc 'A-F0-9' | fold -w 64 | head -n 1)
+        RANDOM_PUBKEY="02${RANDOM_64H}"
+        RANDOM_33H=$(cat /dev/urandom | tr -dc 'A-F0-9' | fold -w 33 | head -n 1)
+        RANDOM_RADDRESS="R${RANDOM_33H}"
+        RANDOM_7D=$(cat /dev/urandom | tr -dc '0-9' | fold -w 7 | head -n 1)
+        RANDOM_IDENTIFIER="ID-${RANDOM_7D}"
+	RANDOM_1D=$(cat /dev/urandom | tr -dc '1-9' | fold -w 1 | head -n 1)
+	JDS=$(cat /dev/urandom | tr -dc '1-2' | fold -w 2 | head -n 1)
+        JDE=$((JDS + RANDOM_1D))
+	YEAR="2020"
+	PROD_MONTH=${RANDOM_1D}
+	PROD_DATE="${YEAR}-${PROD_MONTH}-${JDS}"
+	BBD_MONTH=$((PROD_MONTH + 2))
+	BB_DATE="${YEAR}-${BBD_MONTH}-${JDE}"
+	ORIGIN_COUNTRY="DE"
+	echo curl -s -X POST -H "Content-Type: application/json" ${API_HOST}${API_VER}batch/ -d "{\"identifier\": \"${RANDOM_IDENTIFIER}\",\"jds\": ${JDS}, \"jde\": ${JDE}, \"date_production_start\": \"${PROD_DATE}\", \"date_best_before\": \"${BB_DATE}\", \"origin_country\": \"${ORIGIN_COUNTRY}\", \"pubkey\": \"${RANDOM_PUBKEY}\", \"raddress\": \"$RANDOM_RADDRESS\", \"organization\": ${ORG_ID}}" 
+	BATCH_ID=$(curl -s -X POST -H "Content-Type: application/json" ${API_HOST}${API_VER}batch/ -d "{\"identifier\": \"${RANDOM_IDENTIFIER}\",\"jds\": ${JDS}, \"jde\": ${JDE}, \"date_production_start\": \"${PROD_DATE}\", \"date_best_before\": \"${BB_DATE}\", \"origin_country\": \"${ORIGIN_COUNTRY}\", \"pubkey\": \"${RANDOM_PUBKEY}\", \"raddress\": \"$RANDOM_RADDRESS\", \"organization\": ${ORG_ID}}" | jq '.id')
+	echo ${BATCH_ID}
 done
