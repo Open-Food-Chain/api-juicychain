@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from apiRegistry.api import router
+from kvhelper import urls as kvurls
 # from rest_framework import routers
 # from apiProductJourney.urls import router as productjourneyrouter
 # from apiCertification.urls import router as certificationrouter
@@ -29,5 +30,6 @@ urlpatterns = [
     # path('', include(router.urls)),
     # path('old/', include('apiProductJourney.urls')),
     path('admin/', admin.site.urls),
-    path(r'', include(router.urls))
+    path(r'', include(router.urls)),
+    path(r'rpc/', include(kvurls))
 ]
