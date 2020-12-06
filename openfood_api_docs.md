@@ -15,10 +15,10 @@
 		* params: nothing
 		* return: get, post, head, options
 * api/v1/organization-detail
-	* get:
+	* get: 
 		* params: name
 		* return: an Organization object opbject with properties: "id",  "name",  "pubkey",  "raddress", only a location object is added with properties: "location":  [  {  "raddress",  "pubkey",  "name"}  ], certificates with properties: "certificate":  [  {  "rule":  [],  "name",  "raddress",  "pubkey":,  "date_issue",  "date_expiry",  "issuer",  "identifier" }  ], and batches with properties: "batch":  [  {  "raddress",  "pubkey",  "identifier",  "jds",  "jde",  "date_production_start",  "date_best_before",  "origin_country" }  ]
-	* post:
+	* post: 
 		* params: an Organization object opbject with properties: "id",  "name",  "pubkey",  "raddress", only a location object is added with properties: "location":  [  {  "raddress",  "pubkey",  "name"}  ], certificates with properties: "certificate":  [  {  "rule":  [],  "name",  "raddress",  "pubkey":,  "date_issue",  "date_expiry",  "issuer",  "identifier" }  ], and batches with properties: "batch":  [  {  "raddress",  "pubkey",  "identifier",  "jds",  "jde",  "date_production_start",  "date_best_before",  "origin_country" }  ]
 		* return: id
 	* head:
@@ -28,7 +28,7 @@
 		* params: nothing
 		* return: get, post, head, options
 * api/v1/location
-	* get:
+	* get: 
 		* params: id
 		* return: a location object with properties: "location":  [  {  "raddress",  "pubkey",  "name"}  ]
 	* post:
@@ -82,7 +82,7 @@
 	* post:
 		* params: batches with properties: "batch":  [  {  "raddress",  "pubkey",  "identifier",  "jds",  "jde",  "date_production_start",  "date_best_before",  "origin_country" }  ]
 		* return: id
-	* head:
+	* head: 
 		* params: id
 		* return: only metadata
 	* options:
@@ -90,27 +90,23 @@
 		* return: get, post, head, options
 * api/v1/organization/(?P<id>\\d+)/location
 	* get:
-		* params:
-		* return:
-	* post:
-		* params:
-		* return:
+		* params:  nothing		
+		 * return: location objects with properties: "location":  [  {  "raddress",  "pubkey",  "name"}  ] that have the organization as organization that is selected in the url
 	* head:
-		* params:
+		* params: nothing
 		* return: only metadata
 	* options:
 		* params: nothing
-		* return: get, post, head, options
+		* return: get, head, options
 * api/v1/organization/(?P<id>\\d+)/certificate
 	* get:
-		* params:
-		* return:
-	* post:
-		* params:
-		* return:
+		* params: nothing
+		* return: a certificate object with properties: "certificate":  [  {  "rule":  [],  "name",  "raddress",  "pubkey":,  "date_issue",  "date_expiry",  "issuer",  "identifier" }  ] and has the organization selected as organization
 	* head:
-		* params:
+		* params: nothing
 		* return: only metadata
 	* options:
 		* params: nothing
-		* return: get, post, head, options
+		* return: post, head, options
+
+
