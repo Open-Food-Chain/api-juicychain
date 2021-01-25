@@ -54,7 +54,7 @@ class CertificateSerializer(BaseWalletSerializer):
 
     class Meta:
         model = Certificate
-        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'organization']
+        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'txid_funding', 'organization']
 
 
 class CertificateRuleSerializer(BaseWalletSerializer):

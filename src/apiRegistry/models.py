@@ -74,6 +74,7 @@ class Certificate(Model):
     date_expiry = DateField()
     issuer = CharField(max_length=128)
     identifier = CharField(max_length=255)
+    txid_funding = CharField(max_length=64)
     organization = ForeignKey(
         Organization,
         related_name="certificate",
