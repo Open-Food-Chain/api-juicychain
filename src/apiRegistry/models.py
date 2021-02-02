@@ -40,8 +40,8 @@ class Batch(BaseWalletModel):
     jds = IntegerField()
     jde = IntegerField()
     date_production_start = DateField()
-    date_best_before = DateField()
-    delivery_date = DateField()
+    date_best_before = DateField(null=True, blank=True)
+    delivery_date = DateField(null=True, blank=True)
     origin_country = CharField(max_length=255)
     organization = ForeignKey(
         Organization,
