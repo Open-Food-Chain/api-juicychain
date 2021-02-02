@@ -82,7 +82,7 @@ class BatchSerializer(BaseWalletSerializer):
 
     class Meta:
         model = Batch
-        fields = ['id', 'identifier', 'jds', 'jde', 'date_production_start', 'date_best_before', 'origin_country', 'pubkey', 'raddress', 'organization']
+        fields = ['id', 'identifier', 'jds', 'jde', 'date_production_start', 'date_best_before', 'delivery_date', 'origin_country', 'pubkey', 'raddress', 'organization']
 
 
 class PoolPurchaseOrderSerializer(serializers.HyperlinkedModelSerializer):
