@@ -3,6 +3,8 @@ from django.urls import path, include
 from django.core.validators import RegexValidator
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
+from lib import juicychain
 from .models import (
     Organization,
     Certificate,
@@ -52,7 +54,7 @@ class CertificateSerializer(BaseWalletSerializer):
 
     class Meta:
         model = Certificate
-        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'organization']
+        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'txid_funding', 'organization']
 
 
 class CertificateRuleSerializer(BaseWalletSerializer):
@@ -153,6 +155,12 @@ class NestedOrganizationSerializer(serializers.HyperlinkedModelSerializer):
 class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
+
+    def patch(self, request, *args, **kwargs):
+        juicychain.connect_node()
+        data = {"mylo": "testing123"}
+        kv_response = juicychain.kvupdate_wrapper("mylokv1", data, "1", "mylo")
+        return Response(kv_response, status=status.HTTP_201_CREATED)
 
 
 class CertificateViewSet(viewsets.ModelViewSet):
