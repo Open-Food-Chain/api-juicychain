@@ -211,7 +211,7 @@ class proxyKV():
 class KvViewSet(viewsets.ModelViewSet):
 	queryset = KV.objects.none()
 	serializer_class = KvSerializer	
-	openfood.connect_node()
+	#openfood.connect_node()
 
 	def get_queryset(self):
 		print("KV")
@@ -226,6 +226,7 @@ class KvViewSet(viewsets.ModelViewSet):
 		return [answere]
 
 	print("here")
+	openfood.connect_node()
 
 class BatchViewSet(viewsets.ModelViewSet):
     queryset = Batch.objects.all()
