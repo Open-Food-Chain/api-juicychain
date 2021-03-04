@@ -50,12 +50,12 @@ class OrganizationSerializer(BaseWalletSerializer):
 class KvSerializer(serializers.ModelSerializer):
 	key = serializers.CharField(
 	max_length=66 )
-	value = serializers.CharField(
+	keylen = serializers.CharField(
 	max_length=255 )
 	
 	class Meta:
 		model = KV
-		fields = ['key', 'value']
+		fields = ['key', 'keylen']
 
 
 class CertificateSerializer(BaseWalletSerializer):
@@ -200,33 +200,31 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
 
 
-class proxyKV():
-	key = ""
-	value = ""
+# class proxyKV():
+#	key = ""
+#	value = ""
+#
+#	def __init__(self, iKey, iValue):
+#		self.key = iKey
+#		self.value = iValue
 
-	def __init__(self, iKey, iValue):
-		self.key = iKey
-		self.value = iValue
 
 class KvViewSet(viewsets.ModelViewSet):
-	queryset = KV.objects.none()
-	serializer_class = KvSerializer	
-	#openfood.connect_node()
+    queryset = KV.objects.none()
+    serializer_class = KvSerializer	
+    openfood.connect_node()
 
-	def get_queryset(self):
-		print("KV")
-		key = self.request.query_params.get('key', None)
-		
-		if not key:
-			key = "mylo"
-		
-		value =  openfood.kvsearch_wrapper(key)
-		answere = proxyKV(key, value)
-		print("test")
-		return [answere]
+    def get_queryset(self):
+        print("KV")
+        key = self.request.query_params.get('key', None)
+        if not key:
+            key = "mylo"
+        value = openfood.kvsearch_wrapper(key)
+        print(value)
+        if 'value' not in value:
+            return KV.objects.none()
+        return value
 
-	print("here")
-	openfood.connect_node()
 
 class BatchViewSet(viewsets.ModelViewSet):
     queryset = Batch.objects.all()

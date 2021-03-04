@@ -37,7 +37,7 @@ class Organization(BaseWalletModel):
 
 class KV(Model):
 	key = CharField(max_length=255)
-	value = CharField(max_length=255)
+	# value = CharField(max_length=255)
 
 class Batch(BaseWalletModel):
     identifier = CharField(max_length=255)
