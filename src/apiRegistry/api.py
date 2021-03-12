@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from lib import juicychain
+from .lib import openfood
 from .models import (
     Organization,
     Certificate,
