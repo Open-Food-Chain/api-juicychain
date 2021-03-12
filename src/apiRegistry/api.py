@@ -1,6 +1,7 @@
 from rest_framework import routers, serializers, viewsets
 from django.urls import path, include
 from django.core.validators import RegexValidator
+from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,9 +13,11 @@ from .models import (
     Location,
     Batch,
     PoolPurchaseOrder,
-    PoolBatch
+    PoolBatch,
+    KV
 )
-
+from .lib import openfood
+import json
 
 class BaseWalletSerializer(serializers.ModelSerializer):
     # TODO when using uuid
@@ -44,6 +47,17 @@ class OrganizationSerializer(BaseWalletSerializer):
     class Meta:
         model = Organization
         fields = ['id', 'name', 'pubkey', 'raddress']
+
+
+class KvSerializer(serializers.ModelSerializer):
+	key = serializers.CharField(
+	max_length=66 )
+	keylen = serializers.CharField(
+	max_length=255 )
+	
+	class Meta:
+		model = KV
+		fields = ['key', 'keylen']
 
 
 class CertificateSerializer(BaseWalletSerializer):
@@ -194,6 +208,32 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
 
 
+# class proxyKV():
+#	key = ""
+#	value = ""
+#
+#	def __init__(self, iKey, iValue):
+#		self.key = iKey
+#		self.value = iValue
+
+
+class KvViewSet(viewsets.ModelViewSet):
+    queryset = KV.objects.none()
+    serializer_class = KvSerializer	
+    openfood.connect_node()
+
+    def get_queryset(self):
+        print("KV")
+        key = self.request.query_params.get('key', None)
+        if not key:
+            key = "mylo"
+        value = openfood.kvsearch_wrapper(key)
+        print(value)
+        if 'value' not in value:
+            return KV.objects.none()
+        return value
+
+
 class BatchViewSet(viewsets.ModelViewSet):
     queryset = Batch.objects.all()
     serializer_class = BatchSerializer
@@ -236,11 +276,13 @@ router.register(r'api/v1/location', LocationViewSet)
 router.register(r'api/v1/certificate', CertificateViewSet)
 router.register(r'api/v1/certificate-rule', CertificateRuleViewSet)
 router.register(r'api/v1/batch', BatchViewSet)
+router.register(r'api/v1/kv', KvViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)
 router.register(r'api/v1/organization/(?P<id>\d+)/location', LocationViewSet)
 router.register(r'api/v1/organization/(?P<id>\d+)/certificate', CertificateViewSet)
+
 # TODO works for id as integer, for UUID needs test
 # router.register(r'api/v1/organization-detail/(?P<id>[0-9a-f]+)/location', LocationViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>[0-9a-f-]+)/location', LocationViewSet)
@@ -255,3 +297,4 @@ urlpatterns = [
     path('api/v1/certificate-new/', CertificateViewSet.as_view({'get': 'noraddress'})),
     path('api/v1/certificate-rule-new/', CertificateRuleViewSet.as_view({'get': 'noraddress'}))
 ]
+
