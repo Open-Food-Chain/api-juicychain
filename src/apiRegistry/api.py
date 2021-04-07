@@ -1,17 +1,22 @@
 from rest_framework import routers, serializers, viewsets
 from django.urls import path, include
 from django.core.validators import RegexValidator
+from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
+from .lib import openfood
 from .models import (
     Organization,
     Certificate,
     CertificateRule,
     Location,
     Batch,
-    PoolWallet
+    PoolWallet,
+    KV
 )
-
+from .lib import openfood
+import json
 
 class BaseWalletSerializer(serializers.ModelSerializer):
     # TODO when using uuid
@@ -43,6 +48,17 @@ class OrganizationSerializer(BaseWalletSerializer):
         fields = ['id', 'name', 'pubkey', 'raddress']
 
 
+class KvSerializer(serializers.ModelSerializer):
+	key = serializers.CharField(
+	max_length=66 )
+	keylen = serializers.CharField(
+	max_length=255 )
+	
+	class Meta:
+		model = KV
+		fields = ['key', 'keylen']
+
+
 class CertificateSerializer(BaseWalletSerializer):
 
     # rule = CertificateRuleSerializer(many=True)
@@ -51,7 +67,7 @@ class CertificateSerializer(BaseWalletSerializer):
 
     class Meta:
         model = Certificate
-        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'organization']
+        fields = ['id', 'name', 'date_issue', 'date_expiry', 'issuer', 'identifier', 'pubkey', 'raddress', 'txid_funding', 'organization']
 
 
 class CertificateRuleSerializer(BaseWalletSerializer):
@@ -154,6 +170,12 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
+    def patch(self, request, *args, **kwargs):
+        juicychain.connect_node()
+        data = {"mylo": "testing123"}
+        kv_response = juicychain.kvupdate_wrapper("mylokv1", data, "1", "mylo")
+        return Response(kv_response, status=status.HTTP_201_CREATED)
+
 
 class CertificateViewSet(viewsets.ModelViewSet):
     queryset = Certificate.objects.all()
@@ -184,6 +206,32 @@ class CertificateRuleViewSet(viewsets.ModelViewSet):
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+
+
+# class proxyKV():
+#	key = ""
+#	value = ""
+#
+#	def __init__(self, iKey, iValue):
+#		self.key = iKey
+#		self.value = iValue
+
+
+class KvViewSet(viewsets.ModelViewSet):
+    queryset = KV.objects.none()
+    serializer_class = KvSerializer	
+    openfood.connect_node()
+
+    def get_queryset(self):
+        print("KV")
+        key = self.request.query_params.get('key', None)
+        if not key:
+            key = "mylo"
+        value = openfood.kvsearch_wrapper(key)
+        print(value)
+        if 'value' not in value:
+            return KV.objects.none()
+        return value
 
 
 class BatchViewSet(viewsets.ModelViewSet):
@@ -224,11 +272,13 @@ router.register(r'api/v1/certificate', CertificateViewSet)
 router.register(r'api/v1/certificate-rule', CertificateRuleViewSet)
 router.register(r'api/v1/batch', BatchViewSet)
 router.register(r'api/v1/pool-wallet', PoolWalletViewSet)
+router.register(r'api/v1/kv', KvViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)
 router.register(r'api/v1/organization/(?P<id>\d+)/location', LocationViewSet)
 router.register(r'api/v1/organization/(?P<id>\d+)/certificate', CertificateViewSet)
+
 # TODO works for id as integer, for UUID needs test
 # router.register(r'api/v1/organization-detail/(?P<id>[0-9a-f]+)/location', LocationViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>[0-9a-f-]+)/location', LocationViewSet)
@@ -243,3 +293,4 @@ urlpatterns = [
     path('api/v1/certificate-new/', CertificateViewSet.as_view({'get': 'noraddress'})),
     path('api/v1/certificate-rule-new/', CertificateRuleViewSet.as_view({'get': 'noraddress'}))
 ]
+
