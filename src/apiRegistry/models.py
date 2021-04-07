@@ -61,6 +61,14 @@ class Location(BaseWalletModel):
         on_delete=CASCADE)
 
 
+class PoolWallet(BaseWalletModel):
+    name = CharField(max_length=255)
+    organization = ForeignKey(
+        Organization,
+        related_name="pool_wallet",
+        on_delete=CASCADE)
+
+
 class Certificate(Model):
     name = CharField(max_length=255)
     raddress = CharField(
@@ -102,11 +110,3 @@ class CertificateRule(BaseWalletModel):
         blank=True,
         related_name="rule",
         on_delete=CASCADE)
-
-
-class PoolPurchaseOrder(BaseWalletModel):
-    organization = ForeignKey(Organization, on_delete=CASCADE)
-
-
-class PoolBatch(BaseWalletModel):
-    organization = ForeignKey(Organization, on_delete=CASCADE)
