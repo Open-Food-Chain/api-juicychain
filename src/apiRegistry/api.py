@@ -9,8 +9,7 @@ from .models import (
     CertificateRule,
     Location,
     Batch,
-    PoolPurchaseOrder,
-    PoolBatch
+    PoolWallet
 )
 
 
@@ -85,18 +84,11 @@ class BatchSerializer(BaseWalletSerializer):
         fields = ['id', 'identifier', 'jds', 'jde', 'date_production_start', 'date_best_before', 'delivery_date', 'origin_country', 'pubkey', 'raddress', 'organization']
 
 
-class PoolPurchaseOrderSerializer(serializers.HyperlinkedModelSerializer):
+class PoolWalletSerializer(BaseWalletSerializer):
 
     class Meta:
-        model = PoolPurchaseOrder
-        fields = ['id', 'name', 'pubkey', 'raddress']
-
-
-class PoolBatchSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = PoolBatch
-        fields = ['id', 'name', 'pubkey', 'raddress']
+        model = PoolWallet
+        fields = ['id', 'name', 'pubkey', 'raddress', 'organization']
 
 
 # Nested Serializer
@@ -126,6 +118,13 @@ class NestedLocationSerializer(serializers.HyperlinkedModelSerializer):
         # fields = '__all__'
 
 
+class NestedPoolWalletSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = PoolWallet
+        exclude = ['url', 'organization']
+
+
 class NestedCertificateSerializer(serializers.HyperlinkedModelSerializer):
     rule = NestedCertificateRuleSerializer(many=True)
 
@@ -139,11 +138,12 @@ class NestedOrganizationSerializer(serializers.HyperlinkedModelSerializer):
     location = NestedLocationSerializer(many=True)
     certificate = NestedCertificateSerializer(many=True)
     batch = NestedBatchSerializer(many=True)
+    pool_wallet = NestedPoolWalletSerializer(many=True)
 
     class Meta:
         model = Organization
         depth = 3
-        fields = ['id', 'name', 'pubkey', 'raddress', 'location', 'certificate', 'batch']
+        fields = ['id', 'name', 'pubkey', 'raddress', 'pool_wallet', 'location', 'certificate', 'batch']
 
 
 # Standalone ViewSet
@@ -202,14 +202,9 @@ class BatchViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class PoolPurchaseOrderViewSet(viewsets.ModelViewSet):
-    queryset = PoolPurchaseOrder.objects.all()
-    serializer_class = PoolPurchaseOrderSerializer
-
-
-class PoolBatchViewSet(viewsets.ModelViewSet):
-    queryset = PoolBatch.objects.all()
-    serializer_class = PoolBatchSerializer
+class PoolWalletViewSet(viewsets.ModelViewSet):
+    queryset = PoolWallet.objects.all()
+    serializer_class = PoolWalletSerializer
 
 
 # Nested ViewSet
@@ -228,6 +223,7 @@ router.register(r'api/v1/location', LocationViewSet)
 router.register(r'api/v1/certificate', CertificateViewSet)
 router.register(r'api/v1/certificate-rule', CertificateRuleViewSet)
 router.register(r'api/v1/batch', BatchViewSet)
+router.register(r'api/v1/pool-wallet', PoolWalletViewSet)
 # router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)
