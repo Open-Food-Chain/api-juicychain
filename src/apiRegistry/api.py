@@ -170,6 +170,11 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
+
+    def get_queryset(self):
+        return self.queryset.filter(raddress=self.request.GET.get('raddress'))
+
+
     def patch(self, request, *args, **kwargs):
         juicychain.connect_node()
         data = {"mylo": "testing123"}
@@ -277,7 +282,6 @@ router.register(r'api/v1/certificate-rule', CertificateRuleViewSet)
 router.register(r'api/v1/batch', BatchViewSet)
 router.register(r'api/v1/pool-wallet', PoolWalletViewSet)
 router.register(r'api/v1/kv', KvViewSet)
-# router.register(r'api/v1/organization/(?P<raddress>)', OrganizationViewSet)
 # router.register(r'api/v1/organization/<str:raddress>/certificate', CertificateViewSet)
 # router.register(r'api/v1/organization/(?P<id>[0-9a-f-]+)/location', LocationViewSet)
 router.register(r'api/v1/organization/(?P<id>\d+)/location', LocationViewSet)
