@@ -97,7 +97,7 @@ class BatchSerializer(BaseWalletSerializer):
 
     class Meta:
         model = Batch
-        fields = ['id', 'identifier', 'jds', 'jde', 'date_production_start', 'date_best_before', 'delivery_date', 'origin_country', 'pubkey', 'raddress', 'organization']
+        fields = ['id', 'identifier', 'jds', 'jde', 'date_production_start', 'date_best_before', 'delivery_date', 'origin_country', 'mass_balance', 'pubkey', 'raddress', 'organization']
 
 
 class PoolWalletSerializer(BaseWalletSerializer):
@@ -170,9 +170,12 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
-
     def get_queryset(self):
-        return self.queryset.filter(raddress=self.request.GET.get('raddress'))
+        queryset = Organization.objects.all()
+        raddress = self.request.query_params.get('raddress', None)
+        if (raddress is not None):
+            queryset = queryset.filter(raddress=raddress)[0:1]
+        return queryset
 
 
     def patch(self, request, *args, **kwargs):
