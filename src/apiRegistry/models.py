@@ -46,6 +46,7 @@ class Batch(BaseWalletModel):
     date_production_start = DateField()
     date_best_before = DateField(null=True, blank=True)
     delivery_date = DateField(null=True, blank=True)
+    mass_balance = IntegerField(null=True, blank=True)
     origin_country = CharField(max_length=255)
     organization = ForeignKey(
         Organization,
